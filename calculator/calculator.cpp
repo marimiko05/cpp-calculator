@@ -1,8 +1,8 @@
-// В этом файле определения функций.
-// За основу возьмите решение предыдущей задачи.
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <algorithm>
 #include "calculator.h"
 
 bool ReadNumber(Number& result) {
@@ -10,9 +10,9 @@ bool ReadNumber(Number& result) {
     if (!std::cin) {
         std::cerr << "Error: Numeric operand expected" << std::endl;
         return false;
-    } else {
-        return true;
-    }
+    } 
+    return true;
+    
 }
 
 bool ReadRightNumber(Number& right_num) {
@@ -27,10 +27,9 @@ bool ReadRightNumber(Number& right_num) {
 std::string ReadOperation() {
     std::string op;
     std::cin >> op;
+    std::vector<std::string> ops = {"+", "*", "-", "/", ":", "**", "=", "c", "q", "s", "l"};
 
-    if (op == "+" || op == "*" || op == "-" || op == "/" || 
-        op == ":" || op == "**" || op == "=" || op == "c" || 
-        op == "q" || op == "s" || op == "l") {
+    if (std::find(ops.begin(), ops.end(), op) != ops.end()) {
         return op;
     } else {
         std::cerr << "Error: Unknown token " << op << std::endl;
@@ -39,7 +38,7 @@ std::string ReadOperation() {
 }
 
 bool RunCalculatorCycle() {
-    Number saved_num;
+    Number saved_num = 0;
     Number result = 0;
     bool number_is_saved = false;
 
