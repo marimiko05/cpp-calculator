@@ -68,5 +68,7 @@ private:
     Operation current_operation_ = Operation::NO_OPERATION;
     Number saved_number_;
     bool number_is_saved_ = false;
+    bool equal_pressed_ = false;
+    bool comma_pressed_ = false;
 
 };

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -46,10 +45,15 @@ QString MainWindow::NormalizeNumber(const QString &text) {
 
 void MainWindow::SetText(const QString& text) {
 
+    if (equal_pressed_) {
+        ui->l_formula->setText("");
+    }
+
     QString text2 = NormalizeNumber(RemoveTrailingZeroes(text));
     input_number_ = text2;
     active_number_ = input_number_.toDouble();
     ui->l_result->setText(text2);
+
 }
 
 void MainWindow::AddText(const QString& suffix) {
@@ -110,13 +114,32 @@ void MainWindow::on_tb_zero_clicked()
 
 void MainWindow::on_tb_comma_clicked()
 {
-    if (input_number_[input_number_.size() - 1] !=  '.') {
-        AddText(".");
+    if (!comma_pressed_) {
+        comma_pressed_ = true;
+        if (equal_pressed_) {
+            QString num = ui->l_result->text();
+            if (!num.isEmpty()) {
+                input_number_ = num;
+            }
+        }
+        if (input_number_[input_number_.size() - 1] !=  '.') {
+            AddText(".");
+        }
     }
+
 }
 
 void MainWindow::on_tb_negate_clicked()
 {
+
+    QString num = ui->l_result->text();
+    if (!num.isEmpty()) {
+        input_number_ = num;
+    } else {
+        input_number_ = "0";
+    }
+
+
     if (input_number_.startsWith("-")) {
         input_number_ = input_number_.mid(1);
         QString text = input_number_;
@@ -125,6 +148,7 @@ void MainWindow::on_tb_negate_clicked()
         QString text = "-" + input_number_;
         SetText(text);
     }
+
 }
 
 void MainWindow::on_tb_backspace_clicked()
@@ -143,6 +167,7 @@ QString MainWindow::OpToString(Operation op) {
     case Operation::MULTIPLICATION: return "×";
     case Operation::SUBTRACTION: return "−";
     case Operation::POWER: return "^";
+    default: return "";
     }
 }
 
@@ -160,6 +185,7 @@ void MainWindow::SetOperation(Operation op) {
 
 void MainWindow::on_tb_equal_clicked()
 {
+    equal_pressed_ = true;
     QString text = "%1 %2 %3 =";
     QString textformatted = text.arg(calculator_.GetNumber()).arg(OpToString(current_operation_)).arg(active_number_);
     ui->l_formula->setText(textformatted);
@@ -187,38 +213,57 @@ void MainWindow::on_tb_equal_clicked()
     ui->l_result->setText(QString::number(active_number_));
     input_number_ = "";
     current_operation_ = Operation::NO_OPERATION;
+    comma_pressed_ = false;
+
 }
 
 void MainWindow::on_tb_add_clicked()
 {
     SetOperation(Operation::ADDITION);
+    equal_pressed_ = false;
+    comma_pressed_ = false;
+
 }
 
 void MainWindow::on_tb_substract_clicked()
 {
     SetOperation(Operation::SUBTRACTION);
+    equal_pressed_ = false;
+    comma_pressed_ = false;
+
 }
 
 
 void MainWindow::on_tb_multiplicate_clicked()
 {
     SetOperation(Operation::MULTIPLICATION);
+    equal_pressed_ = false;
+    comma_pressed_ = false;
+
 }
 
 void MainWindow::on_tb_divide_clicked()
 {
     SetOperation(Operation::DIVISION);
+    equal_pressed_ = false;
+    comma_pressed_ = false;
+
 }
 
 void MainWindow::on_tb_power_clicked()
 {
     SetOperation(Operation::POWER);
+    equal_pressed_ = false;
+    comma_pressed_ = false;
+
 }
 
 void MainWindow::on_tb_reset_clicked()
 {
     SetOperation(Operation::NO_OPERATION);
     ui->l_formula->setText("");
+    equal_pressed_ = false;
+    comma_pressed_ = false;
     SetText("0");
 }
 
