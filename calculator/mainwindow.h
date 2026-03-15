@@ -70,5 +70,6 @@ private:
     bool number_is_saved_ = false;
     bool equal_pressed_ = false;
     bool comma_pressed_ = false;
+    bool mr_pressed_ = false;
 
 };

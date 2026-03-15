@@ -114,6 +114,13 @@ void MainWindow::on_tb_zero_clicked()
 
 void MainWindow::on_tb_comma_clicked()
 {
+    if (equal_pressed_ || mr_pressed_) {
+        equal_pressed_ = false;
+        mr_pressed_ = false;
+        SetText("0.");
+        ui->l_formula->setText("");
+
+    }
     if (!comma_pressed_) {
         comma_pressed_ = true;
         if (equal_pressed_) {
@@ -139,6 +146,9 @@ void MainWindow::on_tb_negate_clicked()
         input_number_ = "0";
     }
 
+    if (input_number_ == "0") {
+        return;
+    }
 
     if (input_number_.startsWith("-")) {
         input_number_ = input_number_.mid(1);
@@ -148,6 +158,7 @@ void MainWindow::on_tb_negate_clicked()
         QString text = "-" + input_number_;
         SetText(text);
     }
+    mr_pressed_ = false;
 
 }
 
@@ -157,6 +168,7 @@ void MainWindow::on_tb_backspace_clicked()
         input_number_.chop(1);
         SetText(input_number_);
     }
+    mr_pressed_ = false;
 }
 
 QString MainWindow::OpToString(Operation op) {
@@ -214,6 +226,7 @@ void MainWindow::on_tb_equal_clicked()
     input_number_ = "";
     current_operation_ = Operation::NO_OPERATION;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -222,6 +235,7 @@ void MainWindow::on_tb_add_clicked()
     SetOperation(Operation::ADDITION);
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -230,6 +244,7 @@ void MainWindow::on_tb_substract_clicked()
     SetOperation(Operation::SUBTRACTION);
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -239,6 +254,7 @@ void MainWindow::on_tb_multiplicate_clicked()
     SetOperation(Operation::MULTIPLICATION);
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -247,6 +263,7 @@ void MainWindow::on_tb_divide_clicked()
     SetOperation(Operation::DIVISION);
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -255,6 +272,7 @@ void MainWindow::on_tb_power_clicked()
     SetOperation(Operation::POWER);
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
 
 }
 
@@ -264,6 +282,7 @@ void MainWindow::on_tb_reset_clicked()
     ui->l_formula->setText("");
     equal_pressed_ = false;
     comma_pressed_ = false;
+    mr_pressed_ = false;
     SetText("0");
 }
 
@@ -272,11 +291,13 @@ void MainWindow::on_tb_mc_clicked()
     number_is_saved_ = false;
     saved_number_ = 0;
     ui->l_memory->setText("");
+    mr_pressed_ = false;
 }
 
 void MainWindow::on_tn_mr_clicked()
 {
     if (number_is_saved_) {
+        mr_pressed_ = true;
         active_number_ = saved_number_;
         ui->l_result->setText(QString::number(saved_number_));
         input_number_ = "";
@@ -288,5 +309,6 @@ void MainWindow::on_tb_ms_clicked()
     number_is_saved_ = true;
     saved_number_ = active_number_;
     ui->l_memory->setText("M");
+    mr_pressed_ = false;
 }
 
