@@ -1,40 +1,31 @@
 #pragma once
 
-#include "calculator.h"
-
+#include "enums.h"
 #include <QMainWindow>
+#include <functional>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-enum class Operation {
-    NO_OPERATION,
-    MULTIPLICATION,
-    DIVISION,
-    SUBTRACTION,
-    ADDITION,
-    POWER,
-};
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-
-    MainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void SetText(const QString& text);
-    void AddText(const QString& suffix);
-    QString RemoveTrailingZeroes(const QString &text);
-    QString NormalizeNumber(const QString &text);
-    void SetOperation(Operation op);
-    QString OpToString(Operation op);
+
+    void SetInputText(const std::string& text);
+    void SetErrorText(const std::string& text);
+    void SetFormulaText(const std::string& text);
+    void SetMemText(const std::string& text);
+    void SetExtraKey(const std::optional<std::string>& key);
+    void SetDigitKeyCallback(std::function<void(int)> cb);
+    void SetProcessOperationKeyCallback(std::function<void(Operation)> cb);
+    void SetProcessControlKeyCallback(std::function<void(ControlKey)> cb);
+    void SetControllerCallback(std::function<void(ControllerType)> cb);
 
 private slots:
-
     void on_tb_one_clicked();
     void on_tb_two_clicked();
     void on_tb_three_clicked();
@@ -45,7 +36,7 @@ private slots:
     void on_tb_eight_clicked();
     void on_tb_nine_clicked();
     void on_tb_zero_clicked();
-    void on_tb_comma_clicked();
+    void on_tb_extra_clicked();
     void on_tb_negate_clicked();
     void on_tb_backspace_clicked();
     void on_tb_equal_clicked();
@@ -58,18 +49,13 @@ private slots:
     void on_tb_mc_clicked();
     void on_tn_mr_clicked();
     void on_tb_ms_clicked();
+    void on_cmb_controller_currentIndexChanged(int index);
 
 private:
+    Ui::MainWindow *ui;
 
-    Ui::MainWindow* ui;
-    Calculator calculator_;
-    QString input_number_;
-    Number active_number_;
-    Operation current_operation_ = Operation::NO_OPERATION;
-    Number saved_number_;
-    bool number_is_saved_ = false;
-    bool equal_pressed_ = false;
-    bool comma_pressed_ = false;
-    bool mr_pressed_ = false;
-
+    std::function<void(int)> digit_cb_;
+    std::function<void(Operation)> operation_cb_;
+    std::function<void(ControlKey)> control_cb_;
+    std::function<void(ControllerType)> controller_cb_;
 };
