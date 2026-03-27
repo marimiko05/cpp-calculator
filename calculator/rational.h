@@ -54,7 +54,6 @@ public:
     }
 
     Rational& operator=(const Rational&) = default;
-
     Rational operator+() const { return *this; }
     Rational operator-() const { return Rational(-numerator_, denominator_); }
 

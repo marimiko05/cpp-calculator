@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include <sstream>
 
 MainWindow::MainWindow(QWidget* parent)
@@ -113,17 +112,6 @@ void MainWindow::on_tb_ms_clicked() {
 
 void MainWindow::on_cmb_controller_currentIndexChanged(int index) {
     if (!controller_cb_) return;
-
-    QString text = ui->cmb_controller->currentText();
-    ControllerType type;
-    if (text == "double") type = ControllerType::DOUBLE;
-    else if (text == "float") type = ControllerType::FLOAT;
-    else if (text == "uint8_t") type = ControllerType::UINT8_T;
-    else if (text == "int") type = ControllerType::INT;
-    else if (text == "int64_t") type = ControllerType::INT64_T;
-    else if (text == "size_t") type = ControllerType::SIZE_T;
-    else if (text == "Rational") type = ControllerType::RATIONAL;
-    else return;
-
-    controller_cb_(type);
+    if (index < 0 || index >= static_cast<int>(ControllerType::RATIONAL) + 1) return;
+    controller_cb_(static_cast<ControllerType>(index));
 }
